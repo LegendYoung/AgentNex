@@ -17,6 +17,37 @@ pnpm-lock.yaml
 .env.production.local
 .venv
 
+# Python virtual environments
+venv/
+ENV/
+env/
+agentnex_env/
+**/venv/
+**/ENV/
+**/env/
+**/*_env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
 # Testing
 coverage/
 
