@@ -15,6 +15,8 @@ import {
   KnowledgePage,
   TeamsPage,
   SettingsPage,
+  AgentCreatePage,
+  AgentDetailPage,
 } from '@/pages';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -40,6 +42,8 @@ export function App() {
               <Route index element={<Navigate to="chat" replace />} />
               <Route path="chat" element={<ChatPage />} />
               <Route path="agents" element={<AgentsPage />} />
+              <Route path="agents/create" element={<AgentCreatePage />} />
+              <Route path="agents/:agentId" element={<AgentDetailPage />} />
               <Route path="knowledge" element={<KnowledgePage />} />
               <Route path="teams" element={<TeamsPage />} />
               <Route path="settings" element={<SettingsPage />} />

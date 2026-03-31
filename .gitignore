@@ -95,3 +95,6 @@ yarn.lock
 pnpm-lock.yaml
 .pnpm-debug.log
 .pnpm/
+
+# Turbo
+.turbo/
