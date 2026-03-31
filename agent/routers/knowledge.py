@@ -14,14 +14,24 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from bs4 import BeautifulSoup
 from readability.readability import Document
 
-from config import KNOWLEDGE_DIR
-from database import knowledge, chroma_db
-from services.document_service import document_service
+from agent.config import KNOWLEDGE_DIR
+from agent.database import knowledge, chroma_db
+from agent.services.document_service import document_service
 from agno.knowledge.reader.website_reader import WebsiteReader
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/knowledge", tags=["knowledge"])
+
+
+def close_selenium_driver():
+    """
+    关闭 Selenium WebDriver（如果存在）
+    
+    当前实现使用 requests + BeautifulSoup，不使用 Selenium
+    此函数作为接口占位符保留
+    """
+    pass
 
 
 def fetch_webpage_content(url: str) -> tuple:

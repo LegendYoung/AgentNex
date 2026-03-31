@@ -7,14 +7,15 @@ import os
 import secrets
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
-from database_postgres import get_db
-from models_db import User, PlatformRole, UserStatus
-from utils.auth import (
+from agent.database_postgres import get_db
+from agent.models_db import User, PlatformRole, UserStatus
+from agent.utils.auth import (
     hash_password,
     verify_password,
     create_access_token,
@@ -84,7 +85,7 @@ class ChangePasswordRequest(BaseModel):
 class UserResponse(BaseModel):
     user_id: str
     email: str
-    name: str = None
+    name: Optional[str] = None
     role: str
     require_password_change: bool = False
 

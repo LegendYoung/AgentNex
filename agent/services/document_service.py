@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List
 
-from config import DOCUMENTS_META_FILE
+from agent.config import DOCUMENTS_META_FILE
 
 logger = logging.getLogger(__name__)
 

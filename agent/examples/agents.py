@@ -225,7 +225,7 @@ def create_example_agents(db, creator_id: str):
         db: 数据库会话
         creator_id: 创建者用户 ID（通常是超级管理员）
     """
-    from models_db import Agent
+    from agent.models_db import Agent
     
     examples = [
         CUSTOMER_SERVICE_AGENT,

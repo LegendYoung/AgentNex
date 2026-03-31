@@ -11,9 +11,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
-from database_postgres import get_db
-from models_db import User, Team, TeamMember, TeamInvitation, TeamRole, PlatformRole
-from utils.auth import get_current_user, require_role
+from agent.database_postgres import get_db
+from agent.models_db import User, Team, TeamMember, TeamInvitation, TeamRole, PlatformRole
+from agent.utils.auth import get_current_user, require_role
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/teams", tags=["teams"])

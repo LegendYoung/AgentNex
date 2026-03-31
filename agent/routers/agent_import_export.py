@@ -7,11 +7,11 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from database_postgres import get_db
-from models_db import Agent, User
-from utils.auth import get_current_user
-from services.agent_export_service import export_agent_to_code, generate_agent_readme
-from services.agent_import_service import parse_agent_code, validate_agent_config
+from agent.database_postgres import get_db
+from agent.models_db import Agent, User
+from agent.utils.auth import get_current_user
+from agent.services.agent_export_service import export_agent_to_code, generate_agent_readme
+from agent.services.agent_import_service import parse_agent_code, validate_agent_config
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/agents", tags=["agents"])

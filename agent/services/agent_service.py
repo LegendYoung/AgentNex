@@ -15,10 +15,10 @@ from agno.models.dashscope import DashScope
 from agno.memory import MemoryManager
 from agno.tools.memory import MemoryTools
 
-from config import MODEL_ID, MODEL_BASE_URL
-from database import db, knowledge
-from tools import get_all_tools
-from prompts import build_dynamic_instructions, get_base_instructions
+from agent.config import MODEL_ID, MODEL_BASE_URL
+from agent.database import db, knowledge
+from agent.tools import get_all_tools
+from agent.prompts import build_dynamic_instructions, get_base_instructions
 
 logger = logging.getLogger(__name__)
 

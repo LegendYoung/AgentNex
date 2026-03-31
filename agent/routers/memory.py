@@ -8,7 +8,7 @@ import logging
 from typing import List
 from fastapi import APIRouter, HTTPException
 
-from database import db
+from agent.database import db
 from agno.db.schemas.memory import UserMemory
 
 logger = logging.getLogger(__name__)

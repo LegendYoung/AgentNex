@@ -48,8 +48,13 @@ EMBEDDER_ID = "text-embedding-v3"  # 可选: text-embedding-v2, text-embedding-v
 EMBEDDER_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 CHROMA_COLLECTION_NAME = "agentnex_knowledge"
 
+# ==================== 超级管理员配置 ====================
+
+SUPER_ADMIN_EMAIL = os.getenv("SUPER_ADMIN_EMAIL", "admin@agentnex.io")
+SUPER_ADMIN_PASSWORD = os.getenv("SUPER_ADMIN_PASSWORD", "AgentNex@2026")
+
 # ==================== API 配置 ====================
 
-API_TITLE = "AgentNex API"
-API_VERSION = "2.1.0"
-API_DESCRIPTION = "AI Agent API - 支持动态提示词管理、意图分类、会话管理、流式输出、消息反馈、工具调用、记忆、知识库"
+API_TITLE = "AgentNex Platform API"
+API_VERSION = "1.0.0"
+API_DESCRIPTION = "AgentNex Platform - 智能代理系统平台 API"

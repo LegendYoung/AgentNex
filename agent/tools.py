@@ -9,7 +9,7 @@ from datetime import datetime
 from agno.tools import tool
 from agno.run import RunContext
 
-from config import KNOWLEDGE_DIR
+from agent.config import KNOWLEDGE_DIR
 
 logger = logging.getLogger(__name__)
 

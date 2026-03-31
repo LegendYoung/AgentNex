@@ -20,7 +20,7 @@ if (!(Test-Path $VenvPath)) {
 
 # Start backend service
 Write-Host "`n🔄 Starting backend service..." -ForegroundColor Yellow
-Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$AgentDir'; .\agentnex_env\Scripts\python.exe main.py"
+Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$ProjectRoot'; $AgentDir\agentnex_env\Scripts\python.exe -m agent.main"
 
 # Wait a few seconds for backend to start
 Start-Sleep -Seconds 3

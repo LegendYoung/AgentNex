@@ -6,12 +6,12 @@ import logging
 from typing import Dict, Any
 from fastapi import APIRouter, HTTPException
 
-from models import (
+from agent.models import (
     SessionCreate, SessionUpdate, SessionSummary, SessionDetail,
     ChatResponse, Message, MessageFeedback
 )
-from services.session_service import session_service
-from services.agent_service import create_agent_for_request
+from agent.services.session_service import session_service
+from agent.services.agent_service import create_agent_for_request
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ async def get_sessions():
 @router.post("", response_model=SessionDetail)
 async def create_session(request: SessionCreate = SessionCreate(), user_id: str = "default"):
     """创建新会话"""
-    from models import Session
+    from agent.models import Session
     session = Session(title=request.title, user_id=user_id)
     # 直接添加到 session_service
     session_service._sessions[session.id] = session

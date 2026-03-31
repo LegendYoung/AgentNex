@@ -4,13 +4,13 @@
 
 import os
 import logging
-from agno.db.sqlite import SqliteDb
+# 从 PostgreSQL 配置导入数据库相关对象
+from agent.database_postgres import engine, SessionLocal, Base
 from agno.knowledge.knowledge import Knowledge
 from agno.vectordb.chroma import ChromaDb
 from agno.knowledge.embedder.openai import OpenAIEmbedder
 
-from config import (
-    DB_FILE,
+from agent.config import (
     CHROMA_DIR,
     EMBEDDER_ID,
     EMBEDDER_BASE_URL,
@@ -19,9 +19,9 @@ from config import (
 
 logger = logging.getLogger(__name__)
 
-# ==================== SQLite 数据库 ====================
-
-db = SqliteDb(db_file=str(DB_FILE))
+# ==================== PostgreSQL 数据库 ====================
+# 使用 PostgreSQL 的会话工厂
+db = SessionLocal()
 
 # ==================== ChromaDB 向量数据库 ====================
 
@@ -48,17 +48,16 @@ try:
     chroma_db.create()
     logger.info(f"ChromaDB collection created/verified: {CHROMA_COLLECTION_NAME}")
     
-    # 调试：检查向量数量
-    try:
-        vector_count = chroma_db.get_count() if hasattr(chroma_db, 'get_count') else 0
-        logger.info(f"Initial vector count in ChromaDB: {vector_count}")
-    except Exception as e:
-        logger.warning(f"Could not get initial vector count: {e}")
-        
+    # 移除 count 调用，因为 ChromaDb 可能没有这个方法
+    # vector_count = chroma_db.count()
+    # logger.info(f"ChromaDB vector count: {vector_count}")
+    
 except Exception as e:
-    logger.error(f"Failed to create ChromaDB collection: {e}")
+    logger.error(f"Failed to initialize ChromaDB: {e}")
     raise
 
-# ==================== 知识库实例 ====================
-
-knowledge = Knowledge(vector_db=chroma_db)
+# 创建知识库实例
+knowledge = Knowledge(
+    vector_db=chroma_db,
+    # 移除 embedder 参数，因为 Knowledge 构造函数不接受它
+)

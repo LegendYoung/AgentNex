@@ -16,11 +16,11 @@ PostgreSQL 数据库模型定义
 
 from datetime import datetime
 from sqlalchemy import (
-    Column, String, Boolean, DateTime, Text, Integer, ForeignKey, Enum, JSON
+    Column, String, Boolean, DateTime, Text, Integer, ForeignKey, Enum, JSON, UniqueConstraint
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from database_postgres import Base
+from .database_postgres import Base
 import uuid
 import enum
 
@@ -138,7 +138,7 @@ class TeamMember(Base):
     
     # 唯一约束：一个用户在一个团队中只能有一个角色
     __table_args__ = (
-        {"unique_constraint": "unique_team_member"},
+        UniqueConstraint('team_id', 'user_id', name='unique_team_member'),
     )
     
     def __repr__(self):

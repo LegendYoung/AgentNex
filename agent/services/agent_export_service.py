@@ -5,7 +5,7 @@ Agent 导出服务
 
 import logging
 from typing import Dict, Any
-from models_db import Agent
+from agent.models_db import Agent
 
 logger = logging.getLogger(__name__)
 

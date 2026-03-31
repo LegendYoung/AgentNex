@@ -8,9 +8,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
-from database_postgres import get_db
-from models_db import User, PlatformRole, UserStatus
-from utils.auth import get_current_user, require_admin, require_super_admin
+from agent.database_postgres import get_db
+from agent.models_db import User, PlatformRole, UserStatus
+from agent.utils.auth import get_current_user, require_admin, require_super_admin
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/users", tags=["users"])

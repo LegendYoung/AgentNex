@@ -58,7 +58,7 @@ def init_db():
     初始化数据库
     创建所有表
     """
-    from models_db import Base
+    from .models_db import Base
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created successfully")
 

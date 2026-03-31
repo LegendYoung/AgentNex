@@ -7,9 +7,9 @@ import logging
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
-from models import ChatRequest, ChatResponse, Message
-from services.agent_service import create_agent_for_request
-from services.session_service import session_service
+from agent.models import ChatRequest, ChatResponse, Message
+from agent.services.agent_service import create_agent_for_request
+from agent.services.session_service import session_service
 
 logger = logging.getLogger(__name__)
 

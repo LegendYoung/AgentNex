@@ -5,7 +5,7 @@ Prompt management and intent classification module
 import logging
 from typing import List
 
-from config import PROMPTS_DIR
+from agent.config import PROMPTS_DIR
 
 logger = logging.getLogger(__name__)
 

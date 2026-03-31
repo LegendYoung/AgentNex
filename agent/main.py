@@ -29,30 +29,32 @@ AI Agent API Server - Version 2.0
 """
 
 import logging
+import traceback
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from config import API_TITLE, API_VERSION, API_DESCRIPTION, PROMPTS_DIR
-from database import knowledge
-from tools import set_knowledge_instance
+from agent.config import API_TITLE, API_VERSION, API_DESCRIPTION, PROMPTS_DIR
+from agent.database import knowledge
+from agent.tools import set_knowledge_instance
 
 # 导入所有路由
-from routers import (
+from agent.routers import (
     chat_router,
     sessions_router,
     memory_router,
     knowledge_router,
     tools_router,
 )
-from routers.auth import router as auth_router
-from routers.users import router as users_router
-from routers.teams import router as teams_router
-from routers.agents import router as agents_router
-from routers.agent_import_export import router as agent_import_export_router
-from routers.knowledge_bases import router as knowledge_bases_router
+from agent.routers.auth import router as auth_router
+from agent.routers.users import router as users_router
+from agent.routers.teams import router as teams_router
+from agent.routers.agents import router as agents_router
+from agent.routers.agent_import_export import router as agent_import_export_router
+from agent.routers.knowledge_bases import router as knowledge_bases_router
 
-from services.session_service import session_service
+from agent.services.session_service import session_service
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -73,12 +75,12 @@ async def lifespan(app: FastAPI):
     
     # 初始化数据库和超级管理员
     try:
-        from database_postgres import init_db
+        from agent.database_postgres import init_db
         init_db()
         logger.info("Database tables created successfully")
         
         # 初始化超级管理员和示例数据
-        from init_examples import init_p0_environment
+        from agent.init_examples import init_p0_environment
         init_p0_environment()
         logger.info("Database initialized successfully")
     except Exception as e:
@@ -87,7 +89,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # 关闭时
-    from routers.knowledge import close_selenium_driver
+    from agent.routers.knowledge import close_selenium_driver
     close_selenium_driver()
     logger.info("AgentNex Platform shutdown, resources cleaned")
 
@@ -109,6 +111,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ==================== 全局异常处理 ====================
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """全局异常处理器 - 捕获所有未处理的异常"""
+    logger.error(f"Unhandled exception: {exc}")
+    logger.error(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": str(exc),
+            "type": type(exc).__name__,
+            "traceback": traceback.format_exc().split("\n")
+        }
+    )
 
 
 # ==================== 注册路由 ====================

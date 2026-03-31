@@ -16,10 +16,10 @@ if sys.platform == 'win32':
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy.orm import Session
-from database_postgres import SessionLocal, init_db
-from models_db import User, Agent, PlatformRole
-from utils.auth import hash_password
-from examples.agents import create_example_agents
+from agent.database_postgres import SessionLocal, init_db
+from agent.models_db import User, Agent, PlatformRole
+from agent.utils.auth import hash_password
+from agent.examples.agents import create_example_agents
 import logging
 
 logging.basicConfig(level=logging.INFO)

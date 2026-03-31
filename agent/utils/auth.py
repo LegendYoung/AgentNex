@@ -12,8 +12,8 @@ from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
-from database_postgres import get_db
-from models_db import User, PlatformRole, UserStatus
+from agent.database_postgres import get_db
+from agent.models_db import User, PlatformRole, UserStatus
 
 # JWT 配置
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "agentnex-secret-key-change-in-production")
