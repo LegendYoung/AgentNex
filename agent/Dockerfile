@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件
-COPY requirements.txt.new ./requirements.txt
+COPY requirements.txt ./requirements.txt
 
 # 安装 Python 依赖
 RUN pip install --no-cache-dir -r requirements.txt
@@ -26,4 +26,4 @@ RUN mkdir -p /app/data
 EXPOSE 8000
 
 # 启动命令
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main_v2:app", "--host", "0.0.0.0", "--port", "8000"]

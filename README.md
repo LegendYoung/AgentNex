@@ -21,6 +21,7 @@
 确保已安装：
 - Node.js >= 20
 - pnpm >= 9.15.9
+- Python >= 3.11
 
 ```bash
 # 启用 corepack (如果尚未启用)
@@ -33,7 +34,12 @@ npm install -g pnpm@9.15.9
 ### 2. 安装依赖
 
 ```bash
+# 安装前端依赖
 pnpm install
+
+# 安装后端依赖
+cd agent
+pip install -r requirements.txt
 ```
 
 ### 3. 配置 AI Agent
@@ -51,9 +57,9 @@ DASHSCOPE_API_KEY=your_actual_api_key_here
 **启动后端 API 服务:**
 ```bash
 cd agent
-python agent_api.py
+python main_v2.py
 # 或者
-python -m uvicorn agent_api:app --host 0.0.0.0 --port 8000
+python -m uvicorn main_v2:app --host 0.0.0.0 --port 8000
 ```
 
 **启动前端开发服务器:**
@@ -71,10 +77,9 @@ pnpm dev
 ```
 .
 ├── agent/                 # AI Agent 后端服务
-│   ├── agent_api.py      # FastAPI 后端接口
-│   ├── main.py          # 命令行版本
-│   ├── simple.py        # 简单示例
-│   └── .env             # 环境变量配置
+│   ├── main_v2.py        # FastAPI 后端接口（完整版）
+│   ├── requirements.txt  # Python 依赖文件
+│   └── .env              # 环境变量配置
 ├── apps/
 │   └── web/             # Web 应用
 │       └── src/
