@@ -1,5 +1,56 @@
-import { AIChat } from "./components/ai-chat"
+/**
+ * 应用入口
+ * 路由配置
+ */
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/hooks/useAuth';
+import { AuthGuard } from '@/components/auth';
+import { ConsoleLayout } from '@/components/console';
+import {
+  LoginPage,
+  RegisterPage,
+  ChatPage,
+  AgentsPage,
+  KnowledgePage,
+  TeamsPage,
+  SettingsPage,
+} from '@/pages';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export function App() {
-  return <AIChat />
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* 公开路由 */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            {/* 受保护路由 - 控制台 */}
+            <Route
+              path="/console"
+              element={
+                <AuthGuard>
+                  <ConsoleLayout />
+                </AuthGuard>
+              }
+            >
+              <Route index element={<Navigate to="chat" replace />} />
+              <Route path="chat" element={<ChatPage />} />
+              <Route path="agents" element={<AgentsPage />} />
+              <Route path="knowledge" element={<KnowledgePage />} />
+              <Route path="teams" element={<TeamsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+            </Route>
+
+            {/* 默认重定向 */}
+            <Route path="/" element={<Navigate to="/console" replace />} />
+            <Route path="*" element={<Navigate to="/console" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }

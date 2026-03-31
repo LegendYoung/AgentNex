@@ -158,10 +158,11 @@ def python_exec_tool(code: str) -> str:
 '''
     
     # 创建 Agent 实例
+    agent_params_str = ',\n    '.join(agent_params)
     code += f'''
 # 创建 Agent 实例
 agent = Agent(
-    {',\n    '.join(agent_params)}
+    {agent_params_str}
 )
 
 # 运行 Agent
@@ -169,7 +170,7 @@ if __name__ == "__main__":
     response = agent.run("你好，请介绍一下你自己")
     print(response.content)
 '''
-    
+
     return code
 
 

@@ -1,13 +1,18 @@
 {
-  "name": "LegendAgent",
+  "name": "AgentNex",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:backend": "cd agent && python main.py",
+    "dev:frontend": "cd apps/web && npx vite --host",
     "lint": "turbo lint",
     "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "start": "powershell -ExecutionPolicy Bypass -File ./start.ps1",
+    "start:docker": "powershell -ExecutionPolicy Bypass -File ./start.ps1 -Docker",
+    "stop": "powershell -ExecutionPolicy Bypass -File ./start.ps1 -Stop"
   },
   "devDependencies": {
     "prettier": "^3.8.1",

@@ -42,29 +42,45 @@ cd agent
 pip install -r requirements.txt
 ```
 
-### 3. 配置 AI Agent
+### 3. 配置环境变量
 
 1. 访问 [DashScope 控制台](https://dashscope.console.aliyun.com/) 获取 API Key
-2. 复制 `agent/.env.example` 为 `agent/.env`
-3. 在 `.env` 文件中填入您的 API Key:
+2. 复制项目根目录的 `.env.example` 文件（如果存在）或直接创建 `.env` 文件
+3. 在项目根目录的 `.env` 文件中填入您的配置:
 
 ```env
+# DashScope API Key (必需)
 DASHSCOPE_API_KEY=your_actual_api_key_here
+
+# Tavily API Key (可选，用于网络搜索)
+TAVILY_API_KEY=your_tavily_api_key_here
+
+# 其他配置项会自动使用默认值
 ```
 
+> **注意**: Docker Compose 会从项目根目录读取 `.env` 文件，包含数据库、JWT、管理员账户等完整配置。
+
 ### 4. 启动项目
+
+**推荐方式 - 使用 Docker Compose (一键启动):**
+```bash
+# 在项目根目录
+docker-compose up -d
+```
+
+**本地开发方式:**
 
 **启动后端 API 服务:**
 ```bash
 cd agent
-python main_v2.py
+python main.py
 # 或者
-python -m uvicorn main_v2:app --host 0.0.0.0 --port 8000
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 **启动前端开发服务器:**
 ```bash
-# 在另一个终端窗口
+# 在另一个终端窗口，项目根目录
 pnpm dev
 ```
 

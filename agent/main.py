@@ -73,11 +73,16 @@ async def lifespan(app: FastAPI):
     
     # 初始化数据库和超级管理员
     try:
-        from init_admin import init_db
+        from database_postgres import init_db
         init_db()
+        logger.info("Database tables created successfully")
+        
+        # 初始化超级管理员和示例数据
+        from init_examples import init_p0_environment
+        init_p0_environment()
         logger.info("Database initialized successfully")
     except Exception as e:
-        logger.warning(f"Database already initialized or error: {e}")
+        logger.warning(f"Database initialization error: {e}")
     
     yield
     

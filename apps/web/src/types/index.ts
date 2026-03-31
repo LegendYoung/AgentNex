@@ -1,3 +1,8 @@
+// 类型定义导出
+
+export * from './auth';
+export * from './agent';
+
 // 消息类型
 export interface Message {
   id: string;
@@ -32,7 +37,7 @@ export interface Memory {
   topics?: string[];
   user_id?: string;
   input?: string;
-  created_at?: string | number;  // 可能是 ISO 字符串或秒级时间戳
+  created_at?: string | number;
   updated_at?: string | number;
   feedback?: string;
   agent_id?: string;
@@ -53,7 +58,6 @@ export interface KnowledgeDocument {
   chunk_count?: number;
   created_at?: string;
   user_id?: string;
-  // 网页元信息
   title?: string;
   summary?: string;
 }
