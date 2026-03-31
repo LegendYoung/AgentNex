@@ -6,6 +6,12 @@ P0 阶段完整初始化脚本
 import sys
 import os
 
+# 设置输出编码
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 # 添加父目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -38,7 +44,7 @@ def init_p0_environment():
         logger.info("=" * 60)
         
         init_db()
-        logger.info("✅ Database tables created successfully\n")
+        logger.info("[OK] Database tables created successfully\n")
         
         # ==================== Step 2: 创建超级管理员 ====================
         logger.info("=" * 60)
@@ -51,7 +57,7 @@ def init_p0_environment():
         ).first()
         
         if existing_super_admin:
-            logger.info(f"✅ Super admin already exists: {existing_super_admin.email}")
+            logger.info(f"[OK] Super admin already exists: {existing_super_admin.email}")
             super_admin = existing_super_admin
         else:
             # 创建超级管理员
@@ -68,7 +74,7 @@ def init_p0_environment():
                 existing_user.require_password_change = True
                 db.commit()
                 super_admin = existing_user
-                logger.info(f"✅ Existing user promoted to super admin: {super_admin_email}")
+                logger.info(f"[OK] Existing user promoted to super admin: {super_admin_email}")
             else:
                 # 创建新的超级管理员
                 hashed_password = hash_password(super_admin_password)
@@ -85,11 +91,11 @@ def init_p0_environment():
                 db.commit()
                 
                 logger.info("=" * 60)
-                logger.info("✅ Super admin created successfully!")
+                logger.info("[OK] Super admin created successfully!")
                 logger.info("=" * 60)
                 logger.info(f"Email: {super_admin_email}")
                 logger.info(f"Password: {super_admin_password}")
-                logger.info("⚠️  IMPORTANT: Please change the password after first login!")
+                logger.info("[WARNING] IMPORTANT: Please change the password after first login!")
                 logger.info("=" * 60 + "\n")
         
         # ==================== Step 3: 创建示例 Agent ====================
@@ -103,12 +109,12 @@ def init_p0_environment():
         ).count()
         
         if existing_examples > 0:
-            logger.info(f"✅ Example agents already exist ({existing_examples} found)\n")
+            logger.info(f"[OK] Example agents already exist ({existing_examples} found)\n")
         else:
             created_agents = create_example_agents(db, str(super_admin.id))
             
             logger.info("=" * 60)
-            logger.info("✅ Example agents created successfully!")
+            logger.info("[OK] Example agents created successfully!")
             logger.info("=" * 60)
             for agent in created_agents:
                 logger.info(f"  - {agent.name} (ID: {agent.id})")
@@ -116,7 +122,7 @@ def init_p0_environment():
         
         # ==================== 完成 ====================
         logger.info("=" * 60)
-        logger.info("🎉 P0 Environment Initialization Completed!")
+        logger.info("[SUCCESS] P0 Environment Initialization Completed!")
         logger.info("=" * 60)
         logger.info("\nAccess Information:")
         logger.info("  - API: http://localhost:8000")
@@ -125,7 +131,7 @@ def init_p0_environment():
         logger.info("=" * 60)
         
     except Exception as e:
-        logger.error(f"❌ Initialization failed: {e}")
+        logger.error(f"[ERROR] Initialization failed: {e}")
         import traceback
         traceback.print_exc()
         db.rollback()
