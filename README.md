@@ -2,134 +2,240 @@
 
 智能代理系统 - 具备工具调用、记忆管理和知识库检索能力
 
-# LegendAgent
-
-一个基于 Vite 和 shadcn/ui 构建的 Monorepo 前端模板项目。
-
 ## 功能特性
 
 - **Monorepo 架构**: 使用 pnpm workspace 管理多个应用和共享包
 - **AI 对话 Agent**: 集成 agno 和 DashScope (通义千问) 的智能对话功能
+- **用户系统**: 完整的用户认证、RBAC 权限、团队管理
+- **Agent 管理**: 创建、配置、测试 Agent，支持知识库和工具调用
 - **现代化前端栈**: React 19 + TypeScript + Vite + Tailwind CSS
 - **UI 组件库**: 基于 shadcn/ui 的可复用组件库
-- **高效构建**: 使用 Turbo 进行任务编排和缓存
 
-## 快速开始
+---
 
-### 1. 环境准备
+## 一、环境准备
 
 确保已安装：
-- Node.js >= 20
-- pnpm >= 9.15.9
-- Python >= 3.11
+
+| 依赖 | 版本要求 |
+|-----|---------|
+| Node.js | >= 18 |
+| pnpm | >= 9.0 |
+| Python | >= 3.11 |
+| PostgreSQL | >= 14 |
+| Docker (可选) | 最新版 |
 
 ```bash
-# 启用 corepack (如果尚未启用)
-corepack enable
+# 安装 pnpm
+npm install -g pnpm
 
-# 或者手动安装 pnpm
-npm install -g pnpm@9.15.9
+# macOS 安装 PostgreSQL (可选，本地开发需要)
+brew install postgresql@14
+brew services start postgresql@14
 ```
 
-### 2. 安装依赖
+---
+
+## 二、配置环境变量
+
+1. 复制示例配置：
+```bash
+cp .env.example .env
+```
+
+2. 编辑 `.env`，填入必填项：
+```env
+# 必填 - AI 服务
+DASHSCOPE_API_KEY=your_dashscope_api_key
+
+# 可选 - 网络搜索
+TAVILY_API_KEY=your_tavily_api_key
+
+# 数据库 (本地开发)
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=agentnex
+POSTGRES_PASSWORD=agentnex123
+POSTGRES_DB=agentnex
+```
+
+> **获取 API Key**: 访问 [DashScope 控制台](https://dashscope.console.aliyun.com/)
+
+---
+
+## 三、启动方式
+
+### 方式 A：Docker 启动（推荐生产环境）
+
+**适合**: 生产部署、快速体验
 
 ```bash
-# 安装前端依赖
+# 一键启动所有服务（PostgreSQL + 后端 + 前端）
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+```
+
+### 方式 B：本地开发启动
+
+**适合**: 开发调试
+
+#### 1. 安装依赖
+
+```bash
+# 前端依赖
 pnpm install
 
-# 安装后端依赖
+# 后端依赖（创建虚拟环境）
 cd agent
+python3 -m venv venv
+source venv/bin/activate  # macOS/Linux
+# venv\Scripts\activate   # Windows
+
 pip install -r requirements.txt
 ```
 
-### 3. 配置环境变量
+#### 2. 启动 PostgreSQL
 
-1. 访问 [DashScope 控制台](https://dashscope.console.aliyun.com/) 获取 API Key
-2. 复制项目根目录的 `.env.example` 文件（如果存在）或直接创建 `.env` 文件
-3. 在项目根目录的 `.env` 文件中填入您的配置:
+```bash
+# macOS (Homebrew)
+brew services start postgresql@14
 
-```env
-# DashScope API Key (必需)
-DASHSCOPE_API_KEY=your_actual_api_key_here
+# 创建数据库
+createdb agentnex
 
-# Tavily API Key (可选，用于网络搜索)
-TAVILY_API_KEY=your_tavily_api_key_here
-
-# 其他配置项会自动使用默认值
+# 或使用 psql
+psql postgres -c "CREATE DATABASE agentnex;"
 ```
 
-> **注意**: Docker Compose 会从项目根目录读取 `.env` 文件，包含数据库、JWT、管理员账户等完整配置。
+#### 3. 启动后端
 
-### 4. 启动项目
-
-**推荐方式 - 使用 Docker Compose (一键启动):**
 ```bash
-# 在项目根目录
-docker-compose up -d
+# 在项目根目录，设置 PYTHONPATH
+cd /path/to/AgentNex
+PYTHONPATH=$(pwd) agent/venv/bin/python -m agent.main
 ```
 
-**本地开发方式:**
+#### 4. 启动前端
 
-**启动后端 API 服务:**
 ```bash
-cd agent
-python main.py
-# 或者
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
-```
-
-**启动前端开发服务器:**
-```bash
-# 在另一个终端窗口，项目根目录
+cd apps/web
 pnpm dev
 ```
 
-### 5. 访问应用
-
-打开浏览器访问 `http://localhost:5173` (或其他 Vite 指定的端口)
-
-## 项目结构
-
-```
-.
-├── agent/                 # AI Agent 后端服务
-│   ├── main_v2.py        # FastAPI 后端接口（完整版）
-│   ├── requirements.txt  # Python 依赖文件
-│   └── .env              # 环境变量配置
-├── apps/
-│   └── web/             # Web 应用
-│       └── src/
-│           ├── components/ai-chat.tsx  # AI 聊天组件
-│           └── App.tsx  # 主应用组件
-└── packages/
-    └── ui/              # 共享 UI 组件库
-```
-
-## 开发命令
-
-- `pnpm dev`: 启动所有应用的开发服务器
-- `pnpm build`: 构建生产版本
-- `pnpm lint`: 代码检查
-- `pnpm format`: 代码格式化
-- `pnpm typecheck`: TypeScript 类型检查
-
-## 添加新组件
+#### 或使用启动脚本
 
 ```bash
-pnpm dlx shadcn@latest add <component-name> -c apps/web
+# macOS
+./start-venv.sh
 ```
+
+---
+
+## 四、访问地址
+
+| 服务 | 地址 |
+|-----|------|
+| 前端 | http://localhost:5173 |
+| 后端 API | http://localhost:8000 |
+| API 文档 | http://localhost:8000/docs |
+| 管理员账号 | `admin@agentnex.io` |
+| 管理员密码 | `AgentNex@2026` |
+
+---
+
+## 五、常见问题
+
+### Q: `ModuleNotFoundError: No module named 'agent'`
+
+**A**: 启动后端时必须设置 `PYTHONPATH`：
+```bash
+PYTHONPATH=$(pwd) agent/venv/bin/python -m agent.main
+```
+
+### Q: 数据库连接失败
+
+**A**: 确保 PostgreSQL 正在运行且数据库已创建：
+```bash
+# 检查 PostgreSQL 状态
+brew services list
+
+# 创建数据库
+createdb agentnex
+```
+
+### Q: 前端无法连接后端
+
+**A**: 检查 `.env` 中的 `VITE_API_URL` 配置：
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+### Q: 如何查看本地开发日志
+
+**A**:
+```bash
+# 后端日志
+tail -f /tmp/agentnex_backend.log
+
+# 前端日志
+tail -f /tmp/agentnex_frontend.log
+```
+
+---
+
+## 六、项目结构
+
+```
+AgentNex/
+├── agent/              # 后端服务
+│   ├── main.py         # FastAPI 入口
+│   ├── routers/        # API 路由
+│   ├── models_db.py    # 数据模型
+│   ├── requirements.txt
+│   └── venv/           # Python 虚拟环境
+├── apps/
+│   └── web/            # 前端应用
+│       └── src/
+├── packages/
+│   └── ui/             # 共享 UI 组件
+├── .env                # 环境变量
+├── docker-compose.yml  # Docker 配置
+└── start-venv.sh       # 本地启动脚本
+```
+
+---
+
+## 七、开发命令
+
+```bash
+# 前端
+pnpm dev          # 启动开发服务器
+pnpm build        # 构建生产版本
+pnpm lint         # 代码检查
+
+# 后端 (在 agent/ 目录，激活虚拟环境后)
+python -m agent.main           # 启动服务
+pytest                         # 运行测试
+```
+
+---
 
 ## 技术栈
 
-- **前端**: React 19, TypeScript, Vite, Tailwind CSS
-- **UI 库**: shadcn/ui (基于 Radix UI)
-- **后端**: Python, FastAPI, agno, DashScope
-- **构建工具**: Turbo, pnpm
-- **代码规范**: Prettier, ESLint
+| 层级 | 技术 |
+|-----|------|
+| 前端 | React 19, TypeScript, Vite, Tailwind CSS |
+| UI 库 | shadcn/ui (基于 Radix UI) |
+| 后端 | Python, FastAPI, SQLAlchemy |
+| AI | agno, DashScope (通义千问) |
+| 数据库 | PostgreSQL |
+| 构建工具 | Turbo, pnpm |
 
-## 注意事项
+---
 
-- 确保 DashScope API Key 正确配置
-- 后端 API 默认运行在 `http://localhost:8000`
-- 前端开发服务器默认运行在 `http://localhost:5173`
-- 在生产环境中，请配置正确的 CORS 策略和 API 地址
+**问题反馈**: GitHub Issues
