@@ -184,7 +184,7 @@ export function AIChat() {
   }, [isResizing]);
 
   return (
-    <div className={`flex h-screen transition-colors duration-300 ${isDark ? 'dark bg-[#0a0a0f]' : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'}`}>
+    <div className={`flex h-screen transition-colors duration-300 ${isDark ? 'dark' : ''} bg-background`}>
       {/* Sidebar */}
       {sidebarOpen && (
         <Sidebar

@@ -25,21 +25,22 @@ logger = logging.getLogger(__name__)
 def create_super_admin():
     """创建超级管理员用户"""
     from agent.config import SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD
-    
+    from agent.utils.auth import hash_password
+
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
-    
+
     try:
         # 检查是否已存在超级管理员
         existing_user = db.query(User).filter(User.email == SUPER_ADMIN_EMAIL).first()
         if existing_user:
             logger.info(f"Super admin user {SUPER_ADMIN_EMAIL} already exists")
             return
-        
-        # 创建超级管理员（注意：这里应该哈希密码，但为了简化先直接存储）
+
+        # 创建超级管理员，使用正确的密码哈希
         super_admin = User(
             email=SUPER_ADMIN_EMAIL,
-            password_hash=SUPER_ADMIN_PASSWORD,  # 字段名是 password_hash
+            password_hash=hash_password(SUPER_ADMIN_PASSWORD),  # 使用哈希密码
             role=PlatformRole.SUPER_ADMIN,  # 字段名是 role 而不是 platform_role
             status="active",
             require_password_change=True,  # 首次登录强制修改密码
@@ -49,7 +50,7 @@ def create_super_admin():
         db.add(super_admin)
         db.commit()
         logger.info(f"Super admin user {SUPER_ADMIN_EMAIL} created successfully")
-        
+
     except Exception as e:
         logger.error(f"Failed to create super admin: {e}")
         db.rollback()
