@@ -434,8 +434,11 @@ async def test_agent(
             ),
             instructions=request.agent_config.system_prompt,
             markdown=True,
-            # 记忆配置
-            add_memories=request.agent_config.enable_memory,
+            # 记忆配置 - 使用正确的参数
+            update_memory_on_run=request.agent_config.enable_memory,
+            add_memories_to_context=request.agent_config.enable_memory,
+            # 数据库配置 - 如果启用记忆需要提供 db
+            db=agent.database.db if request.agent_config.enable_memory else None,
             # 知识库配置
             knowledge=knowledge if request.agent_config.enable_knowledge else None,
             search_knowledge=request.agent_config.enable_knowledge,

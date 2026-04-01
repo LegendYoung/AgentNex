@@ -9,8 +9,10 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+# 加载根目录的 .env 文件，强制覆盖已存在的环境变量
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 logger = logging.getLogger(__name__)
 

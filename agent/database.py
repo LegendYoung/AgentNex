@@ -6,6 +6,8 @@ import os
 import logging
 # 从 PostgreSQL 配置导入数据库相关对象
 from agent.database_postgres import engine, SessionLocal, Base
+# 使用 agno 的 PostgresDb 替代 SQLAlchemy Session
+from agno.db import PostgresDb
 from agno.knowledge.knowledge import Knowledge
 from agno.vectordb.chroma import ChromaDb
 from agno.knowledge.embedder.openai import OpenAIEmbedder
@@ -20,8 +22,14 @@ from agent.config import (
 logger = logging.getLogger(__name__)
 
 # ==================== PostgreSQL 数据库 ====================
-# 使用 PostgreSQL 的会话工厂
-db = SessionLocal()
+# 使用 agno 的 PostgresDb，它支持 get_user_memories 等方法
+db = PostgresDb(
+    db_engine=engine,
+    create_schema=True,
+)
+
+# 保留 SessionLocal 用于 FastAPI 依赖注入（非 agno 相关操作）
+session_factory = SessionLocal
 
 # ==================== ChromaDB 向量数据库 ====================
 

@@ -8,8 +8,9 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
-# 加载环境变量
-load_dotenv()
+# 加载环境变量 - 优先从根目录加载，强制覆盖已存在的环境变量
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(ROOT_DIR / ".env", override=True)
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
