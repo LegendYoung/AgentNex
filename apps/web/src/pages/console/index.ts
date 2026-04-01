@@ -7,3 +7,5 @@ export { TeamsPage } from './TeamsPage';
 export { SettingsPage } from './SettingsPage';
 export { AgentTeamsPage } from './AgentTeamsPage';
 export { AgentTeamCreatePage } from './AgentTeamCreatePage';
+export { WorkflowsPage } from './WorkflowsPage';
+export { WorkflowCreatePage } from './WorkflowCreatePage';

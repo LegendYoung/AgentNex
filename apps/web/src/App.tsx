@@ -19,6 +19,8 @@ import {
   AgentDetailPage,
   AgentTeamsPage,
   AgentTeamCreatePage,
+  WorkflowsPage,
+  WorkflowCreatePage,
 } from '@/pages';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -49,6 +51,9 @@ export function App() {
               <Route path="agent-teams" element={<AgentTeamsPage />} />
               <Route path="agent-teams/create" element={<AgentTeamCreatePage />} />
               <Route path="agent-teams/:teamId" element={<AgentTeamCreatePage />} />
+              <Route path="workflows" element={<WorkflowsPage />} />
+              <Route path="workflows/create" element={<WorkflowCreatePage />} />
+              <Route path="workflows/:workflowId" element={<WorkflowCreatePage />} />
               <Route path="knowledge" element={<KnowledgePage />} />
               <Route path="teams" element={<TeamsPage />} />
               <Route path="settings" element={<SettingsPage />} />

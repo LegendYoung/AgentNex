@@ -54,6 +54,7 @@ from agent.routers.agents import router as agents_router
 from agent.routers.agent_import_export import router as agent_import_export_router
 from agent.routers.knowledge_bases import router as knowledge_bases_router
 from agent.routers.agent_teams import router as agent_teams_router
+from agent.routers.workflows import router as workflows_router
 
 from agent.services.session_service import session_service
 
@@ -148,6 +149,9 @@ app.include_router(agent_import_export_router, tags=["agents"])
 
 # Agent Teams 路由（P1阶段）
 app.include_router(agent_teams_router, tags=["agent-teams"])
+
+# Workflows 路由（P2阶段）
+app.include_router(workflows_router, tags=["workflows"])
 
 # 知识库管理路由（增强版）
 app.include_router(knowledge_bases_router, tags=["knowledge"])

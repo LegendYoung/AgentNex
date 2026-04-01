@@ -17,6 +17,7 @@ import {
   ChevronDown,
   User,
   Network,
+  GitBranch,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@workspace/ui/lib/utils';
@@ -25,6 +26,7 @@ const navItems = [
   { to: '/console/chat', icon: MessageSquare, label: '对话', end: true },
   { to: '/console/agents', icon: Bot, label: 'Agent' },
   { to: '/console/agent-teams', icon: Network, label: 'Agent团队' },
+  { to: '/console/workflows', icon: GitBranch, label: '工作流' },
   { to: '/console/knowledge', icon: Database, label: '知识库' },
   { to: '/console/teams', icon: Users, label: '团队' },
   { to: '/console/settings', icon: Settings, label: '设置' },
