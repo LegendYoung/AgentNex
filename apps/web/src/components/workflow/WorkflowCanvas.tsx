@@ -76,25 +76,25 @@ function WorkflowNodeComponent({ data, id }: { data: WorkflowNodeData; id: strin
       {/* 内容 */}
       <div className="p-3">
         <div className="text-xs text-muted-foreground">
-          {data.node_type === 'agent' && data.config.agent_id && (
+          {data.node_type === 'agent' && data.config.agent_id != null && (
             <span>Agent ID: {String(data.config.agent_id).slice(0, 8)}...</span>
           )}
-          {data.node_type === 'team' && data.config.team_id && (
+          {data.node_type === 'team' && data.config.team_id != null && (
             <span>Team ID: {String(data.config.team_id).slice(0, 8)}...</span>
           )}
-          {data.node_type === 'delay' && data.config.delay_seconds && (
-            <span>延迟: {data.config.delay_seconds}秒</span>
+          {data.node_type === 'delay' && data.config.delay_seconds != null && (
+            <span>延迟: {String(data.config.delay_seconds)}秒</span>
           )}
           {data.node_type === 'condition' && (
             <span>条件分支节点</span>
           )}
-          {data.node_type === 'human_input' && data.config.prompt && (
+          {data.node_type === 'human_input' && data.config.prompt != null && (
             <span className="line-clamp-2">{String(data.config.prompt)}</span>
           )}
-          {data.node_type === 'code' && data.config.language && (
-            <span>语言: {data.config.language}</span>
+          {data.node_type === 'code' && data.config.language != null && (
+            <span>语言: {String(data.config.language)}</span>
           )}
-          {data.node_type === 'api_call' && data.config.url && (
+          {data.node_type === 'api_call' && data.config.url != null && (
             <span className="truncate">{String(data.config.url)}</span>
           )}
         </div>

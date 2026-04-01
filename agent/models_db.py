@@ -16,7 +16,7 @@ PostgreSQL 数据库模型定义
 
 from datetime import datetime
 from sqlalchemy import (
-    Column, String, Boolean, DateTime, Text, Integer, ForeignKey, Enum, JSON, UniqueConstraint
+    Column, String, Boolean, DateTime, Text, Integer, Float, ForeignKey, Enum, JSON, UniqueConstraint
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship

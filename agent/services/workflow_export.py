@@ -63,15 +63,15 @@ def export_workflow_as_python(
         elif node.node_type == WorkflowNodeType.END.value:
             continue
         elif node.node_type == WorkflowNodeType.AGENT.value:
-            lines.extend(self._generate_agent_step(node))
+            lines.extend(_generate_agent_step(node))
         elif node.node_type == WorkflowNodeType.TEAM.value:
-            lines.extend(self._generate_team_step(node))
+            lines.extend(_generate_team_step(node))
         elif node.node_type == WorkflowNodeType.CONDITION.value:
-            lines.extend(self._generate_condition_step(node))
+            lines.extend(_generate_condition_step(node))
         elif node.node_type == WorkflowNodeType.CODE.value:
-            lines.extend(self._generate_code_step(node))
+            lines.extend(_generate_code_step(node))
         elif node.node_type == WorkflowNodeType.DELAY.value:
-            lines.extend(self._generate_delay_step(node))
+            lines.extend(_generate_delay_step(node))
     
     lines.extend([
         '',
@@ -96,7 +96,7 @@ def export_workflow_as_python(
     return '\n'.join(lines)
 
 
-def _generate_agent_step(self, node: WorkflowNode) -> List[str]:
+def _generate_agent_step(node: WorkflowNode) -> List[str]:
     """生成 Agent 步骤代码"""
     config = node.config or {}
     agent_id = config.get("agent_id", "")
@@ -112,7 +112,7 @@ def _generate_agent_step(self, node: WorkflowNode) -> List[str]:
     ]
 
 
-def _generate_team_step(self, node: WorkflowNode) -> List[str]:
+def _generate_team_step(node: WorkflowNode) -> List[str]:
     """生成 Team 步骤代码"""
     config = node.config or {}
     team_id = config.get("team_id", "")
@@ -128,7 +128,7 @@ def _generate_team_step(self, node: WorkflowNode) -> List[str]:
     ]
 
 
-def _generate_condition_step(self, node: WorkflowNode) -> List[str]:
+def _generate_condition_step(node: WorkflowNode) -> List[str]:
     """生成条件步骤代码"""
     config = node.config or {}
     branches = config.get("branches", [])
@@ -153,7 +153,7 @@ def _generate_condition_step(self, node: WorkflowNode) -> List[str]:
     return lines
 
 
-def _generate_code_step(self, node: WorkflowNode) -> List[str]:
+def _generate_code_step(node: WorkflowNode) -> List[str]:
     """生成代码步骤代码"""
     config = node.config or {}
     code = config.get("code", "")
@@ -166,7 +166,7 @@ def _generate_code_step(self, node: WorkflowNode) -> List[str]:
     ]
 
 
-def _generate_delay_step(self, node: WorkflowNode) -> List[str]:
+def _generate_delay_step(node: WorkflowNode) -> List[str]:
     """生成延迟步骤代码"""
     config = node.config or {}
     delay_seconds = config.get("delay_seconds", 1)
