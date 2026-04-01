@@ -130,7 +130,6 @@ pnpm dev
 #### 或使用启动脚本
 
 ```bash
-# macOS
 ./start-venv.sh
 ```
 
