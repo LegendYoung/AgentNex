@@ -150,3 +150,22 @@ export const api = {
   delete: <T>(endpoint: string, options?: Omit<RequestOptions, 'method' | 'body'>) =>
     apiRequest<T>(endpoint, { ...options, method: 'DELETE' }),
 };
+
+// API 响应包装类型
+interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
+
+// Axios风格的apiClient（兼容性导出）
+export const apiClient = {
+  defaults: { baseURL: API_BASE },
+  get: <T,>(url: string, config?: { params?: Record<string, unknown> }): Promise<{ data: ApiResponse<T> }> =>
+    apiRequest<ApiResponse<T>>(url, { method: 'GET' }).then(res => ({ data: res })),
+  post: <T,>(url: string, data?: unknown): Promise<{ data: ApiResponse<T> }> =>
+    apiRequest<ApiResponse<T>>(url, { method: 'POST', body: data }).then(res => ({ data: res })),
+  put: <T,>(url: string, data?: unknown): Promise<{ data: ApiResponse<T> }> =>
+    apiRequest<ApiResponse<T>>(url, { method: 'PUT', body: data }).then(res => ({ data: res })),
+  delete: <T,>(url: string): Promise<{ data: ApiResponse<T> }> =>
+    apiRequest<ApiResponse<T>>(url, { method: 'DELETE' }).then(res => ({ data: res })),
+};

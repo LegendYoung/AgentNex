@@ -5,6 +5,7 @@ JWT Token 生成、验证、密码加密
 
 import os
 import jwt
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError, DecodeError
 import bcrypt
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
@@ -126,9 +127,9 @@ def decode_token(token: str) -> Dict[str, Any]:
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         return payload
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except (InvalidTokenError, DecodeError):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 

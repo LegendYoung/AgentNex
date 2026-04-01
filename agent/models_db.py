@@ -325,3 +325,156 @@ class ResourcePermission(Base):
     
     def __repr__(self):
         return f"<ResourcePermission resource_type={self.resource_type} team_id={self.team_id}>"
+
+
+# ==================== Agent Team 表 (P1阶段) ====================
+
+class CommunicationMode(str, enum.Enum):
+    """团队通信模式"""
+    BROADCAST = "broadcast"      # 广播：所有Agent都收到消息
+    POINT_TO_POINT = "point_to_point"  # 点对点：指定接收者
+    TOPIC_BASED = "topic_based"  # 主题订阅：按主题分发
+
+
+class DecisionMode(str, enum.Enum):
+    """团队决策模式"""
+    VOTING = "voting"            # 投票制：超过半数同意
+    LEADER = "leader"            # 负责人制：指定主Agent决策
+    UNANIMOUS = "unanimous"      # 一致通过制：所有Agent同意
+
+
+class AgentTeam(Base):
+    """Agent团队表"""
+    __tablename__ = "agent_teams"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    # 基础信息
+    name = Column(String(32), nullable=False)
+    description = Column(String(200))
+    goal = Column(String(500), nullable=False)  # 团队目标
+
+    # 团队配置
+    max_rounds = Column(Integer, default=20)  # 最大对话轮数 1-100
+    timeout_minutes = Column(Integer, default=10)  # 超时时间 1-60分钟
+    global_prompt = Column(Text)  # 团队全局提示词
+    entry_agent_id = Column(UUID(as_uuid=True))  # 主入口Agent ID
+
+    # 通信与决策配置
+    communication_mode = Column(
+        Enum(CommunicationMode),
+        default=CommunicationMode.BROADCAST,
+        nullable=False
+    )
+    decision_mode = Column(
+        Enum(DecisionMode),
+        default=DecisionMode.LEADER,
+        nullable=False
+    )
+
+    # 权限
+    is_public = Column(Boolean, default=False, nullable=False)
+    creator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    # 状态
+    is_active = Column(Boolean, default=True, nullable=False)
+
+    # 时间戳
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # 关系
+    creator = relationship("User", backref="created_agent_teams")
+    nodes = relationship("AgentTeamNode", back_populates="team", cascade="all, delete-orphan")
+    edges = relationship("AgentTeamEdge", back_populates="team", cascade="all, delete-orphan")
+    sessions = relationship("AgentTeamSession", back_populates="team", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<AgentTeam {self.name}>"
+
+
+class AgentTeamNode(Base):
+    """Agent团队节点表（画布上的Agent节点）"""
+    __tablename__ = "agent_team_nodes"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("agent_teams.id"), nullable=False)
+    agent_id = Column(UUID(as_uuid=True), ForeignKey("agents.id"), nullable=False)
+
+    # 画布位置
+    position_x = Column(Integer, default=0)
+    position_y = Column(Integer, default=0)
+
+    # 节点配置
+    role_in_team = Column(String(32))  # 团队中的角色名称
+    responsibilities = Column(String(500))  # 职责描述
+    allowed_tools = Column(JSON, default=list)  # 允许的工具列表
+    can_call_agents = Column(JSON, default=list)  # 可调用的其他Agent节点ID
+
+    # 时间戳
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # 关系
+    team = relationship("AgentTeam", back_populates="nodes")
+    agent = relationship("Agent")
+
+    def __repr__(self):
+        return f"<AgentTeamNode team_id={self.team_id} agent_id={self.agent_id}>"
+
+
+class AgentTeamEdge(Base):
+    """Agent团队连线表（节点间的连接）"""
+    __tablename__ = "agent_team_edges"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("agent_teams.id"), nullable=False)
+
+    # 连接关系
+    source_node_id = Column(UUID(as_uuid=True), ForeignKey("agent_team_nodes.id", ondelete="CASCADE"), nullable=False)
+    target_node_id = Column(UUID(as_uuid=True), ForeignKey("agent_team_nodes.id", ondelete="CASCADE"), nullable=False)
+
+    # 条件分支（可选）
+    condition_type = Column(String(20))  # expression, always
+    condition_value = Column(Text)  # 条件表达式或值
+
+    # 时间戳
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    # 关系
+    team = relationship("AgentTeam", back_populates="edges")
+    source_node = relationship("AgentTeamNode", foreign_keys=[source_node_id])
+    target_node = relationship("AgentTeamNode", foreign_keys=[target_node_id])
+
+    def __repr__(self):
+        return f"<AgentTeamEdge {self.source_node_id} -> {self.target_node_id}>"
+
+
+class AgentTeamSession(Base):
+    """Agent团队会话表（对话历史）"""
+    __tablename__ = "agent_team_sessions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("agent_teams.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    # 会话状态
+    status = Column(String(20), default="active", nullable=False)  # active, completed, failed
+
+    # 对话历史（JSON格式存储完整对话）
+    messages = Column(JSON, default=list)
+
+    # 任务状态追踪
+    task_status = Column(JSON, default=dict)  # 每个Agent的任务状态
+
+    # 时间戳
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    completed_at = Column(DateTime)
+
+    # 关系
+    team = relationship("AgentTeam", back_populates="sessions")
+    user = relationship("User")
+
+    def __repr__(self):
+        return f"<AgentTeamSession team_id={self.team_id} status={self.status}>"

@@ -1,5 +1,9 @@
 export { ChatPage } from './ChatPage';
 export { AgentsPage } from './AgentsPage';
+export { AgentCreatePage } from './AgentCreatePage';
+export { AgentDetailPage } from './AgentDetailPage';
 export { KnowledgePage } from './KnowledgePage';
 export { TeamsPage } from './TeamsPage';
 export { SettingsPage } from './SettingsPage';
+export { AgentTeamsPage } from './AgentTeamsPage';
+export { AgentTeamCreatePage } from './AgentTeamCreatePage';
