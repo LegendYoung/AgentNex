@@ -1,0 +1,3 @@
+#!/Users/legend-macos/Documents/AgentNex/agent/venv311/bin/python3.11
+import readability
+readability.main()
