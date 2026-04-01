@@ -1,6 +1,88 @@
 # AgentNex Platform - 快速上手指南
 
-## 一、第一步：一键启动
+## 一、启动方式
+
+### 方式 A：Docker 启动（推荐生产环境）
+
+```bash
+# 1. 配置环境变量
+cp .env.example .env
+# 编辑 .env，填入 DASHSCOPE_API_KEY
+
+# 2. 一键启动
+docker-compose up -d
+
+# 3. 验证部署
+curl http://localhost:8000/
+```
+
+### 方式 B：macOS 本地开发启动（推荐开发环境）
+
+#### 前置条件
+- PostgreSQL 运行在 `localhost:5432`
+- Python 3.11+ (虚拟环境在 `agent/venv`)
+- Node.js 18+
+
+#### 配置文件
+主配置文件在项目根目录 `.env`，包含所有环境变量：
+```bash
+# 必填项
+DASHSCOPE_API_KEY=your_dashscope_api_key
+TAVILY_API_KEY=your_tavily_api_key  # 可选，用于网络搜索
+
+# 数据库配置
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=agentnex
+POSTGRES_PASSWORD=agentnex123
+POSTGRES_DB=agentnex
+```
+
+> ⚠️ 注意：`config.py` 会自动加载根目录的 `.env`，不需要 `agent/.env`
+
+#### 启动命令
+
+```bash
+# 1. 清理占用端口
+lsof -ti:8000 | xargs kill -9 2>/dev/null
+lsof -ti:5173 | xargs kill -9 2>/dev/null
+
+# 2. 启动后端（必须在项目根目录，设置 PYTHONPATH）
+cd /Users/legend-macos/Documents/AgentNex
+PYTHONPATH=/Users/legend-macos/Documents/AgentNex agent/venv/bin/python -m agent.main > /tmp/agentnex_backend.log 2>&1 &
+
+# 3. 启动前端
+cd /Users/legend-macos/Documents/AgentNex/apps/web
+npm run dev > /tmp/agentnex_frontend.log 2>&1 &
+```
+
+#### 或使用启动脚本
+
+```bash
+cd /Users/legend-macos/Documents/AgentNex
+./start-venv.sh
+```
+
+#### 常见问题
+
+| 问题 | 解决方案 |
+|-----|---------|
+| `ModuleNotFoundError: No module named 'agent'` | 必须设置 `PYTHONPATH` 指向项目根目录 |
+| 缺少依赖 | `agent/venv/bin/pip install <package>` |
+| 虚拟环境不完整 | 确保 `agent/venv` 是 Python 3.11 环境，包含所有依赖 |
+
+#### 访问地址
+
+| 服务 | 地址 |
+|-----|------|
+| 前端 | http://localhost:5173 |
+| 后端 API | http://localhost:8000 |
+| API 文档 | http://localhost:8000/docs |
+| 管理员账号 | admin@agentnex.io / AgentNex@2026 |
+
+---
+
+## 二、第一步：验证启动
 
 ```bash
 # 1. 配置环境变量

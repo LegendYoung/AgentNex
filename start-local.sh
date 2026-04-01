@@ -30,9 +30,10 @@ if [ ! -f .env ]; then
     cp .env.example .env 2>/dev/null || echo "DASHSCOPE_API_KEY=placeholder" > .env
 fi
 
-# 启动后端服务 (后台运行)
+# 启动后端服务 (后台运行，需要设置 PYTHONPATH)
 echo "🚀 启动后端 API 服务..."
-nohup python3 main.py > /tmp/backend.log 2>&1 &
+cd /Users/legend-macos/Documents/AgentNex
+nohup env PYTHONPATH=/Users/legend-macos/Documents/AgentNex agent/venv/bin/python -m agent.main > /tmp/backend.log 2>&1 &
 BACKEND_PID=$!
 echo "后端服务 PID: $BACKEND_PID"
 echo $BACKEND_PID > /tmp/agentnex_backend.pid

@@ -85,8 +85,9 @@ if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
     sleep 2
 fi
 
-# 使用 nohup 后台运行
-nohup python3 main.py > /tmp/agentnex_backend.log 2>&1 &
+# 使用 nohup 后台运行（需要在项目根目录启动，设置 PYTHONPATH）
+cd "$SCRIPT_DIR"
+nohup env PYTHONPATH="$SCRIPT_DIR" venv/bin/python -m agent.main > /tmp/agentnex_backend.log 2>&1 &
 BACKEND_PID=$!
 echo "后端服务 PID: $BACKEND_PID"
 echo $BACKEND_PID > /tmp/agentnex_backend.pid
@@ -169,7 +170,7 @@ echo "   后端: kill $BACKEND_PID 或 kill \$(cat /tmp/agentnex_backend.pid)"
 echo "   前端: kill $FRONTEND_PID 或 kill \$(cat /tmp/agentnex_frontend.pid)"
 echo ""
 echo "🔄 重启服务:"
-echo "   后端: kill $BACKEND_PID && cd $AGENT_DIR && source venv/bin/activate && python3 main.py &"
+echo "   后端: cd $SCRIPT_DIR && PYTHONPATH=$SCRIPT_DIR agent/venv/bin/python -m agent.main &"
 echo "   前端: kill $FRONTEND_PID && cd $WEB_DIR && npm run dev &"
 echo ""
 echo "👤 默认管理员账号:"
